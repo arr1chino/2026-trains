@@ -30,7 +30,7 @@
 ## 训练营期间的主要增量
 
 全部代码都是训练营期间写的（2026-09-27），仓库从 `chore: 初始化工程骨架` 开始，
-按模块分批提交，共 16 次提交。
+按模块分批提交，共 24 次提交。
 
 ### 做了什么
 
@@ -45,6 +45,7 @@
 | 7. 测试 | 不依赖 Photoshop 的纯逻辑测试，从 36 项加到 56 项断言 |
 | 8. 文档与工程 | README、开发记录、更新日志、一键安装脚本、GitHub Actions（语法检查 + 测试矩阵） |
 | 9. 按日志修真实问题 | 按 Photoshop 的 UXP 日志定位并修掉清单写法、图标路径两个真实报错；把 API 配置收进独立设置页，主界面只留生成要用的东西 |
+| 10. 真机反馈返工界面 | 拿 PS 里的截图一条条查原因：宿主给原生控件的布局盒子偏大、原生下拉的弹出列表由系统绘制、图标条目重复会被宿主拒绝解析清单、原生控件的文字按宿主行高绘制（不写 `line-height` 就被裁）。改完顺手把"清单必须能解析"做成 14 项自动化测试 |
 
 ### 提交记录（仓库内可见）
 
@@ -65,6 +66,15 @@
 09-27 16:22  feat(api): 补上 nano banana 适配——对话式协议、图片提取补全、字段降级重试
 09-27 17:14  ci: 加入 Actions 语法检查与测试矩阵；README 补界面预览、接口支持说明与 56 项测试说明
 09-27 17:15  fix(manifest): 图标路径改用基名，交给宿主拼 @1x/@2x（原先日志刷 Scaled Icon not found）
+09-27 17:57  style(ui): 钉死参数行行高与控件高度，修 Photoshop 面板里三行被撑开
+09-27 18:00  fix(ui): 设置视图改为互斥显示，修 Photoshop 里浮层叠字；预览截图按面板宽度重出
+09-27 18:01  fix(ui): 原生下拉框换成自绘档位按钮与模型列表，修 PS 里字体与配色不受控
+09-27 18:02  docs: 重出界面预览（档位按钮与模型列表），并压缩设置页提示文案
+09-27 18:07  fix(manifest): 修图标条目重复导致清单解析失败、插件整个不显示；加清单自检测试
+09-27 18:21  style(ui): 设置页放宽行距与控件高度，输入框加高到 30px；预览图改按 360px 宽度重出
+09-27 18:26  fix(ui): 输入框显式 line-height，修 PS 里首行文字被裁；行高放宽到 34px
+09-27 18:50  style(ui): 参数行再放宽一档，去掉会裁字的 overflow；多行框改像素行高并挪走长占位符
+09-27 19:13  docs: 开发记录补上真机反馈驱动的界面返工（8 次提交的原因与取舍）
 ```
 
 ## 过程记录
@@ -72,7 +82,8 @@
 - **commit**：<https://github.com/arr1chino/ps-selection-gen/commits/main> —— 按模块分批提交，每条说明改了什么，上面的时间线就是提交顺序
 - **开发日志**：<https://github.com/arr1chino/ps-selection-gen/blob/main/DEVELOPMENT-LOG.md> —— 按「我提的问题 → AI 给了什么 → 我的判断 → 验证结果」记录关键决策与踩坑
 - **更新日志**：<https://github.com/arr1chino/ps-selection-gen/blob/main/CHANGELOG.md> —— 按版本倒序，含「已知限制」与「待办」
-- **测试**：<https://github.com/arr1chino/ps-selection-gen/blob/main/test/test-core.js> —— 56 项断言，`node test/test-core.js` 全部通过
+- **测试**：<https://github.com/arr1chino/ps-selection-gen/tree/main/test> —— `test-core.js` 56 项断言、
+  `test-manifest.js` 14 项清单自检，`node test/test-core.js` 与 `node test/test-manifest.js` 全部通过
 - **CI**：<https://github.com/arr1chino/ps-selection-gen/actions> —— 每次提交自动跑语法检查与测试
 - **截图**：<https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots> —— 面板主界面与设置页（按面板尺寸在浏览器里渲染的界面预览，会注明；不拿预览图充当实机截图）
 - **版本**：标签 `v0.1.0` —— <https://github.com/arr1chino/ps-selection-gen/tags>
