@@ -35,7 +35,7 @@
 ## 训练营期间的主要增量
 
 全部代码都是训练营期间写的（2026-09-27 开始），仓库从 `chore: 初始化工程骨架` 开始，
-按模块分批提交，截至本文件最后一次更新共 44 次，完整列表见
+按模块分批提交，截至本文件最后一次更新共 46 次，完整列表见
 <https://github.com/arr1chino/ps-selection-gen/commits/main>。
 
 ### 做了什么
@@ -107,6 +107,8 @@
   图注里写明哪张是实机、哪张是预览，不拿预览图充当实机结果
 - **版本**：当前 `0.2.1`（写在与标签同名的 `manifest.json` 里），标签 `v0.1.0` / `v0.2.0` / `v0.2.1`
   —— <https://github.com/arr1chino/ps-selection-gen/tags>
+- **录屏解说稿**：<https://github.com/arr1chino/ps-selection-gen/blob/main/docs/录屏解说稿.md> ——
+  现有录屏是无声的，这份稿子写了「做了什么 / 怎么做的 / 踩了什么坑」，重录或加字幕时照着说即可
 - **PR 状态**：<https://github.com/edrFerd/2026-trains/pull/3> 已于 2026-09-28 合并
   （本文件是合并后的内容补充，走 <https://github.com/edrFerd/2026-trains/pull/8>）
 
