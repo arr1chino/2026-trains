@@ -25,7 +25,8 @@
 
 - 仓库：https://github.com/arr1chino/ps-selection-gen
 - PR：<https://github.com/edrFerd/2026-trains/pull/3> —— 已于 2026-09-28 被上游合并；
-  本次是补一份内容更新（登记文件 `submissions/arr1chino.md`）
+  之后的内容补充走 <https://github.com/edrFerd/2026-trains/pull/8>
+  （同样只改登记文件 `submissions/arr1chino.md`）
 - Demo：真机录屏（84 秒，从框选到贴回）
   <https://github.com/arr1chino/ps-selection-gen/releases/download/v0.2.0/demo.mp4>；
   截图见 <https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots>
@@ -106,7 +107,7 @@
   图注里写明哪张是实机、哪张是预览，不拿预览图充当实机结果
 - **版本**：标签 `v0.1.0` / `v0.2.0` —— <https://github.com/arr1chino/ps-selection-gen/tags>
 - **PR 状态**：<https://github.com/edrFerd/2026-trains/pull/3> 已于 2026-09-28 合并
-  （本文件是合并后的内容补充，走新的 PR）
+  （本文件是合并后的内容补充，走 <https://github.com/edrFerd/2026-trains/pull/8>）
 
 ## 其他说明
 
