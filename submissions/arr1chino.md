@@ -15,9 +15,10 @@
 配置一次 API 就能一直用，主面板只留每次生成都要碰的东西。
 
 功能：配置 API（地址 / Key / 协议 / 模型）、拉取模型列表、一句提示词 + 张数（张数决定这句生成几张）、
-按选区生成、结果自动贴回、结果自动编组并加白色蒙版、网络并发、任务级与全局中断（提前截断）。
+按选区生成、结果自动贴回、结果自动编组并加白色蒙版（编组这一步真机上没跑通，见文末「真机验证结果」）、
+网络并发、任务级与全局中断（提前截断）。
 
-工程上：零第三方依赖，8 个源文件；纯逻辑部分有 145 项自动化断言；
+工程上：零第三方依赖，8 个源文件；纯逻辑部分有 150 项自动化断言；
 不依赖 Creative Cloud，直接放进 Photoshop 的 `Plug-ins` 目录即可。
 
 ## 项目 / PR
@@ -25,13 +26,15 @@
 - 仓库：https://github.com/arr1chino/ps-selection-gen
 - PR：<https://github.com/edrFerd/2026-trains/pull/3> —— 已于 2026-09-28 被上游合并；
   本次是补一份内容更新（登记文件 `submissions/arr1chino.md`）
-- Demo：界面预览 <https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots>；
-  真机演示录屏待补（见文末「还没做完的部分」）
+- Demo：真机录屏（84 秒，从框选到贴回）
+  <https://github.com/arr1chino/ps-selection-gen/releases/download/v0.2.0/demo.mp4>；
+  截图见 <https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots>
+  （两张 Photoshop 2026 实机截图 + 两张浏览器渲染的界面预览，图注里会写明哪张是哪种）
 
 ## 训练营期间的主要增量
 
 全部代码都是训练营期间写的（2026-09-27 开始），仓库从 `chore: 初始化工程骨架` 开始，
-按模块分批提交，截至本文件最后一次更新共 40 次，完整列表见
+按模块分批提交，截至本文件最后一次更新共 43 次，完整列表见
 <https://github.com/arr1chino/ps-selection-gen/commits/main>。
 
 ### 做了什么
@@ -44,11 +47,12 @@
 | 4. 接口层 | 三种协议族（OpenAI 图片接口 / Gemini `:generateContent` / 对话式 `chat/completions`，覆盖纳米香蕉这类只在对话接口出图的模型）、模型列表拉取与排序、尺寸按 16 倍数换算 |
 | 5. Photoshop 层 | 三级降级读选区边界；抓像素 → 发模型 → 结果写临时文件 → `app.open()` 解码 → `imaging.getPixels({targetSize})` 交给 PS 缩放 → `putPixels` 落到选区左上角，一次可撤销 |
 | 6. 并发与中断 | 网络并发池与 Photoshop 串行锁分离；`AbortController` 按任务登记，支持「掐一个」和「掐全部」 |
-| 7. 测试 | 不依赖 Photoshop 的纯逻辑测试，从 36 项加到 145 项断言 |
+| 7. 测试 | 不依赖 Photoshop 的纯逻辑测试，从 36 项加到 150 项断言 |
 | 8. 文档与工程 | README、开发记录、更新日志、一键安装脚本、GitHub Actions（语法检查 + 测试矩阵） |
 | 9. 按日志修真实问题 | 按 Photoshop 的 UXP 日志定位并修掉清单写法、图标路径两个真实报错；把 API 配置收进独立设置页，主界面只留生成要用的东西 |
 | 10. 真机反馈返工界面 | 拿 PS 里的截图一条条查原因：宿主给原生控件的布局盒子偏大、原生下拉的弹出列表由系统绘制、图标条目重复会被宿主拒绝解析清单、原生控件的文字按宿主行高绘制（不写 `line-height` 就被裁）。改完顺手把"清单必须能解析"做成 14 项自动化测试 |
 | 11. 继续按使用反馈收敛 | 生成请求漏带 API Key / 中转站把图当正文发回来两个真问题；结果自动编组并给组加白色蒙版；提示词从"一行一条"改成"一句 + 张数"（写一句、张数设 3，就是同一句出 3 张） |
+| 12. 真机验证与录屏回看 | 在 Photoshop 2026 里按「框选 → 写词 → 生成 → 贴回」完整跑了一遍并录像；回看录屏时又抓出两个真问题：「进行 NaN」（任务状态统计漏了"贴回中"）已修并补测试，编组那一步真机上没成功、已如实记下并补上定位用的诊断输出 |
 
 ### 主要提交（节选，时间顺序）
 
@@ -85,6 +89,8 @@
 09-29 09:56  feat(ps): 生成结果自动编组并给组加白色蒙版
 09-29 10:02  feat(ui): 并发数右端加上下箭头，点上加一按下减一
 09-29 18:05  feat(ui): 提示词改成一句 + 张数，张数决定这一句生成几张
+10-06 20:59  fix: 任务统计补上「贴回中」状态，修掉面板上的「进行 NaN」（录屏回看发现的）
+10-06 20:59  docs: 补上真机验证结果（实机截图 + 录屏），并如实记下编组没成功那一步
 ```
 
 ## 过程记录
@@ -92,10 +98,12 @@
 - **commit**：<https://github.com/arr1chino/ps-selection-gen/commits/main> —— 按模块分批提交，每条说明改了什么，上面的时间线就是提交顺序
 - **开发日志**：<https://github.com/arr1chino/ps-selection-gen/blob/main/DEVELOPMENT-LOG.md> —— 按「我提的问题 → AI 给了什么 → 我的判断 → 验证结果」记录关键决策与踩坑
 - **更新日志**：<https://github.com/arr1chino/ps-selection-gen/blob/main/CHANGELOG.md> —— 按版本倒序，含「已知限制」与「待办」
-- **测试**：<https://github.com/arr1chino/ps-selection-gen/tree/main/test> —— `test-core.js` 145 项断言、
+- **测试**：<https://github.com/arr1chino/ps-selection-gen/tree/main/test> —— `test-core.js` 150 项断言、
   `test-manifest.js` 14 项清单自检，`node test/test-core.js` 与 `node test/test-manifest.js` 全部通过
 - **CI**：<https://github.com/arr1chino/ps-selection-gen/actions> —— 每次提交自动跑语法检查与测试
-- **截图**：<https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots> —— 面板主界面与设置页（按面板尺寸在浏览器里渲染的界面预览，会注明；不拿预览图充当实机截图）
+- **截图**：<https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots> ——
+  两张 Photoshop 2026 实机截图（面板运行中、结果贴回），另有两张浏览器渲染的界面预览；
+  图注里写明哪张是实机、哪张是预览，不拿预览图充当实机结果
 - **版本**：标签 `v0.1.0` / `v0.2.0` —— <https://github.com/arr1chino/ps-selection-gen/tags>
 - **PR 状态**：<https://github.com/edrFerd/2026-trains/pull/3> 已于 2026-09-28 合并
   （本文件是合并后的内容补充，走新的 PR）
@@ -113,10 +121,26 @@
 
 两边逐条对照写在仓库 README 的「来源说明」与「与参考工程的关系」两节里，可对着代码核对。
 
+### 真机验证结果（如实记录）
+
+在 Photoshop 2026（Windows，8 位/通道 RGB 文档）上跑完一遍，对着录屏逐条核对：
+
+- ✅ **面板能加载、不出错** —— 清单解析正常，面板正常显示。
+- ✅ **读到选区边界** —— 日志：`选区 2579×2579 @ (13,428)`。
+  （一共三条降级读取路径，只验到当前文档走的那一条。）
+- ✅ **抓到的像素和选区一致** —— 日志：`像素 2048×2048，通道 3，字节数 12582912`。
+- ✅ **贴回位置和尺寸准确** —— 结果对齐到选区左上角，落在新图层上，一次可撤销。
+- ✅ **并发不卡死、能级联中断** —— 同一次生成里 4 条任务同时排着（完成 2、中断 1、生成中 1），
+  Photoshop 全程能正常操作，单个任务也能掐掉。
+- ❌ **结果自动编组 + 白色蒙版：真机上没成功。** 录屏 20:48:23 那行日志是
+  「编组没做成：Error: Photoshop 返回了一个错误」，已经贴回的图层没受影响。
+  已经在代码里补上「卡在哪一步 + Photoshop 原始错误码」的诊断输出，等下次复现定位。
+  这一步不影响主链路：结果照样贴回，只是没被收进组。
+- ⬜ **16 位文档**没测（手上只有 8 位文档）。
+- ⬜ 直连 Gemini 官方域名那条协议没测（真机走的是中转站）。
+
 ### 还没做完的部分（如实记录）
 
-- **真机验证进行中**：插件已被本机 Photoshop 2026 识别并成功解析清单（按 UXP 日志确认），
-  日志里的两处真实报错（清单 `host` 写法、图标路径）已修复；
-  选区读取、像素方向、贴回对位、16 位文档、并发 3 任务这几项**尚未实测**，跑完会补录屏并更新本文件。
+- 编组的根因待定位（诊断输出已加好）。
 - 不规则选区目前按外接矩形贴回，计划改成把选区当图层蒙版裁掉溢出部分。
 - 发送前预览（生成前先看将发给模型的那张裁切图）尚未实现。
