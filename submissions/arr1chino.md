@@ -35,7 +35,7 @@
 ## 训练营期间的主要增量
 
 全部代码都是训练营期间写的（2026-09-27 开始），仓库从 `chore: 初始化工程骨架` 开始，
-按模块分批提交，截至本文件最后一次更新共 43 次，完整列表见
+按模块分批提交，截至本文件最后一次更新共 44 次，完整列表见
 <https://github.com/arr1chino/ps-selection-gen/commits/main>。
 
 ### 做了什么
@@ -105,7 +105,8 @@
 - **截图**：<https://github.com/arr1chino/ps-selection-gen/tree/main/docs/screenshots> ——
   两张 Photoshop 2026 实机截图（面板运行中、结果贴回），另有两张浏览器渲染的界面预览；
   图注里写明哪张是实机、哪张是预览，不拿预览图充当实机结果
-- **版本**：标签 `v0.1.0` / `v0.2.0` —— <https://github.com/arr1chino/ps-selection-gen/tags>
+- **版本**：当前 `0.2.1`（写在与标签同名的 `manifest.json` 里），标签 `v0.1.0` / `v0.2.0` / `v0.2.1`
+  —— <https://github.com/arr1chino/ps-selection-gen/tags>
 - **PR 状态**：<https://github.com/edrFerd/2026-trains/pull/3> 已于 2026-09-28 合并
   （本文件是合并后的内容补充，走 <https://github.com/edrFerd/2026-trains/pull/8>）
 
